@@ -8,9 +8,8 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
   final LibraryRepository _repository;
   final String deviceId;
 
-  LibraryBloc({required LibraryRepository repository, required this.deviceId})
-      : _repository = repository,
-        super(LibraryInitial()) {
+  LibraryBloc({required this._repository, required this.deviceId})
+      : super(LibraryInitial()) {
     on<LoadSubjects>(_onLoadSubjects);
     on<CategoryChanged>(_onCategoryChanged);
     on<SearchQueryChanged>(_onSearchQueryChanged);

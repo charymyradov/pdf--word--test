@@ -7,8 +7,7 @@ import '../../../../core/constants/app_firestore.dart';
 class LibraryRepositoryImpl implements LibraryRepository {
   final FirebaseFirestore _firestore;
 
-  LibraryRepositoryImpl({required FirebaseFirestore firestore})
-      : _firestore = firestore;
+  LibraryRepositoryImpl({required this._firestore});
 
   @override
   Future<List<Subject>> getSubjects(String deviceId) async {

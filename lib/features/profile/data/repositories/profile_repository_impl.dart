@@ -7,8 +7,7 @@ import '../../../../core/constants/app_firestore.dart';
 class ProfileRepositoryImpl implements ProfileRepository {
   final FirebaseFirestore _firestore;
 
-  ProfileRepositoryImpl({required FirebaseFirestore firestore})
-      : _firestore = firestore;
+  ProfileRepositoryImpl({required this._firestore});
 
   @override
   Future<UserProfile> getProfile(String deviceId) async {

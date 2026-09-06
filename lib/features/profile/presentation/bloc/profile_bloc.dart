@@ -7,9 +7,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final ProfileRepository _repository;
   final String deviceId;
 
-  ProfileBloc({required ProfileRepository repository, required this.deviceId})
-      : _repository = repository,
-        super(ProfileInitial()) {
+  ProfileBloc({required this._repository, required this.deviceId})
+      : super(ProfileInitial()) {
     on<LoadProfile>(_onLoadProfile);
     on<ToggleDarkMode>(_onToggleDarkMode);
   }
