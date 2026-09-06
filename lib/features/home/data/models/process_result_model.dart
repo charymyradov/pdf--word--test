@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/enums/app_enums.dart';
 import '../../domain/entities/process_result.dart';
 
@@ -21,19 +20,18 @@ class ProcessResultModel {
     return {
       'extractedText': extractedText,
       'resultType': resultType,
-      'timestamp': FieldValue.serverTimestamp(),
-      'expiresAt': Timestamp.fromDate(expiresAt),
+      'timestamp': timestamp.toIso8601String(),
+      'expiresAt': expiresAt.toIso8601String(),
     };
   }
 
-  factory ProcessResultModel.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
+  factory ProcessResultModel.fromMap(String id, Map<String, dynamic> map) {
     return ProcessResultModel(
-      id: doc.id,
-      extractedText: data['extractedText'] as String? ?? '',
-      resultType: data['resultType'] as String? ?? 'text',
-      timestamp: (data['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
-      expiresAt: (data['expiresAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      id: id,
+      extractedText: map['extractedText'] as String? ?? '',
+      resultType: map['resultType'] as String? ?? 'text',
+      timestamp: DateTime.tryParse(map['timestamp'] as String? ?? '') ?? DateTime.now(),
+      expiresAt: DateTime.tryParse(map['expiresAt'] as String? ?? '') ?? DateTime.now(),
     );
   }
 
