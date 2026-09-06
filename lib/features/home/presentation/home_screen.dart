@@ -93,13 +93,13 @@ class HomeView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppColors.lightBlue, AppColors.white],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
+        color: Colors.white,
         boxShadow: [
-          BoxShadow(color: AppColors.cardShadow, blurRadius: 8, offset: const Offset(0, 2)),
+          BoxShadow(
+            color: AppColors.primaryBlue.withValues(alpha: 0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Row(
@@ -118,7 +118,11 @@ class HomeView extends StatelessWidget {
               const SizedBox(width: 12),
               const Text(
                 AppConstants.appName,
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.primaryNavy),
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primaryNavy,
+                ),
               ),
             ],
           ),
@@ -154,17 +158,10 @@ class HomeView extends StatelessWidget {
           width: double.infinity,
           constraints: const BoxConstraints(minHeight: 200),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                AppColors.primaryBlue.withValues(alpha: 0.1),
-                AppColors.turquoise.withValues(alpha: 0.1),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+            gradient: AppColors.softGradient,
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
-              color: hasImage ? AppColors.primaryBlue : Colors.grey.shade300,
+              color: hasImage ? AppColors.primaryBlue : AppColors.lightBlue,
               width: hasImage ? 2 : 1,
             ),
           ),
@@ -187,13 +184,16 @@ class HomeView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: AppColors.primaryBlue.withValues(alpha: 0.1),
+              color: AppColors.lightBlue,
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.cloud_upload_outlined, size: 64, color: AppColors.primaryBlue),
           ),
           const SizedBox(height: 16),
-          Text(AppConstants.uploadPrompt, style: TextStyle(fontSize: 16, color: Colors.grey.shade600)),
+          Text(
+            AppConstants.uploadPrompt,
+            style: TextStyle(fontSize: 16, color: AppColors.textSecondary),
+          ),
           const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -208,7 +208,7 @@ class HomeView extends StatelessWidget {
               _buildSourceButton(
                 icon: Icons.photo_library,
                 label: AppConstants.galleryButton,
-                color: AppColors.purple,
+                color: AppColors.accentBlue,
                 onTap: () => _pickImage(context, fromCamera: false),
               ),
             ],
@@ -328,10 +328,14 @@ class HomeView extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
-              BoxShadow(color: AppColors.cardShadow, blurRadius: 8, offset: const Offset(0, 2)),
+              BoxShadow(
+                color: AppColors.primaryBlue.withValues(alpha: 0.08),
+                blurRadius: 10,
+                offset: const Offset(0, 2),
+              ),
             ],
           ),
           child: DropdownButtonHideUnderline(
@@ -343,8 +347,10 @@ class HomeView extends StatelessWidget {
                 children: [
                   const Text('📋', style: TextStyle(fontSize: 20)),
                   const SizedBox(width: 12),
-                  Text(AppConstants.selectProcessType,
-                      style: TextStyle(color: Colors.grey.shade600, fontSize: 16)),
+                  Text(
+                    AppConstants.selectProcessType,
+                    style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
+                  ),
                 ],
               ),
               items: ImageProcessType.values.map((type) {
@@ -359,16 +365,23 @@ class HomeView extends StatelessWidget {
                           Text(type.icon, style: const TextStyle(fontSize: 20)),
                           const SizedBox(width: 12),
                           Expanded(
-                            child: Text(type.title,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w600, fontSize: 15, color: AppColors.primaryNavy)),
+                            child: Text(
+                              type.title,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                                color: AppColors.primaryNavy,
+                              ),
+                            ),
                           ),
                         ],
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 32, top: 2),
-                        child: Text(type.subtitle,
-                            style: TextStyle(fontSize: 12, color: Colors.grey.shade500)),
+                        child: Text(
+                          type.subtitle,
+                          style: TextStyle(fontSize: 12, color: AppColors.textLight),
+                        ),
                       ),
                     ],
                   ),
@@ -426,10 +439,14 @@ class HomeView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(color: AppColors.cardShadow, blurRadius: 8, offset: const Offset(0, 2)),
+          BoxShadow(
+            color: AppColors.primaryBlue.withValues(alpha: 0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Column(
@@ -437,9 +454,12 @@ class HomeView extends StatelessWidget {
           Row(
             children: [
               SizedBox(
-                width: 24, height: 24,
+                width: 24,
+                height: 24,
                 child: CircularProgressIndicator(
-                  value: progress, strokeWidth: 3, color: AppColors.primaryBlue,
+                  value: progress,
+                  strokeWidth: 3,
+                  color: AppColors.primaryBlue,
                   backgroundColor: AppColors.lightBlue,
                 ),
               ),
@@ -452,7 +472,10 @@ class HomeView extends StatelessWidget {
                         : progress < 0.9
                             ? AppConstants.generatingQuiz
                             : AppConstants.creatingFile,
-                style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.primaryNavy),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.primaryNavy,
+                ),
               ),
             ],
           ),
@@ -460,13 +483,17 @@ class HomeView extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: LinearProgressIndicator(
-              value: progress, minHeight: 8, backgroundColor: AppColors.lightBlue,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                  progress < 0.5 ? AppColors.primaryBlue : AppColors.turquoise),
+              value: progress,
+              minHeight: 8,
+              backgroundColor: AppColors.lightBlue,
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryBlue),
             ),
           ),
           const SizedBox(height: 8),
-          Text('${(progress * 100).toInt()}%', style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+          Text(
+            '${(progress * 100).toInt()}%',
+            style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+          ),
         ],
       ),
     );
@@ -515,7 +542,7 @@ class HomeView extends StatelessWidget {
                 side: const BorderSide(color: AppColors.success),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               ),
-              child: const Text('Yeni Islem Yap',
+              child: const Text('Täze amala başlaň',
                   style: TextStyle(color: AppColors.success, fontWeight: FontWeight.w600)),
             ),
           ),
@@ -528,7 +555,7 @@ class HomeView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Quiz basariyla olusturuldu! ${state.result.quizQuestions.length} soru',
+        Text('Quiz üstünlikli döredildi.! ${state.result.quizQuestions.length} sorag',
             style: TextStyle(fontSize: 14, color: Colors.grey.shade700)),
         const SizedBox(height: 12),
         ...List.generate(
@@ -637,11 +664,11 @@ class HomeView extends StatelessWidget {
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: state.result.extractedText));
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Metin kopyalandi!')),
+                    const SnackBar(content: Text('Tekst göçürildi!')),
                   );
                 },
                 icon: const Icon(Icons.copy, size: 18),
-                label: const Text('Kopyala'),
+                label: const Text('Göçüriň'),
               ),
             ),
           ],
@@ -667,7 +694,7 @@ class HomeView extends StatelessWidget {
             child: const Icon(Icons.close, color: Colors.white, size: 28),
           ),
           const SizedBox(height: 12),
-          const Text('Hata Olustu',
+          const Text('Ýalňyşlyk ýüze çykdy.',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: AppColors.error)),
           const SizedBox(height: 8),
           Text(state.message,
@@ -678,7 +705,7 @@ class HomeView extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () => context.read<HomeBloc>().add(ResetProcess()),
               style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
-              child: const Text('Tekrar Dene'),
+              child: const Text('Ýene-de synanyşyň'),
             ),
           ),
         ],
@@ -711,24 +738,34 @@ class HomeView extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                width: 40, height: 4,
-                decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(2)),
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.lightBlue,
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
               const SizedBox(height: 20),
-              const Text('Gorsel Kaynagi',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primaryNavy)),
+              const Text(
+                'Surat çeşmesi',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primaryNavy,
+                ),
+              ),
               const SizedBox(height: 20),
               ListTile(
                 leading: Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: AppColors.primaryBlue.withValues(alpha: 0.1),
+                    color: AppColors.lightBlue,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(Icons.camera_alt, color: AppColors.primaryBlue),
                 ),
                 title: const Text('Kamera'),
-                subtitle: const Text('Fotograf cek'),
+                subtitle: const Text('Surat düşüriň'),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 onTap: () {
                   Navigator.pop(ctx);
@@ -740,13 +777,13 @@ class HomeView extends StatelessWidget {
                 leading: Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: AppColors.purple.withValues(alpha: 0.1),
+                    color: AppColors.lightBlue,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(Icons.photo_library, color: AppColors.purple),
+                  child: const Icon(Icons.photo_library, color: AppColors.accentBlue),
                 ),
-                title: const Text('Galeri'),
-                subtitle: const Text('Mevcut bir gorsel sec'),
+                title: const Text('Galeria'),
+                subtitle: const Text('Bar bolan suraty saýlaň'),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 onTap: () {
                   Navigator.pop(ctx);

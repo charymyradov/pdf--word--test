@@ -1,24 +1,25 @@
+import 'dart:convert';
 import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../domain/entities/process_result.dart';
 import '../../domain/repositories/process_repository.dart';
-import '../models/process_result_model.dart';
 import '../../../../core/enums/app_enums.dart';
-import '../../../../core/constants/app_firestore.dart';
 import '../../../../core/services/gemini_service.dart';
 import '../../../../core/services/image_cache_service.dart';
 
+// ignore_for_file: prefer_initializing_formals
+
 class ProcessRepositoryImpl implements ProcessRepository {
-  final FirebaseFirestore _firestore;
   final GeminiService _geminiService;
   final ImageCacheService _imageCacheService;
 
   ProcessRepositoryImpl({
-    required this._firestore,
-    required this._geminiService,
-    required this._imageCacheService,
-  });
+    required GeminiService geminiService,
+    required ImageCacheService imageCacheService,
+  })  : _geminiService = geminiService,
+        _imageCacheService = imageCacheService;
+
+  static const String _extractionsKey = 'extractions';
 
   @override
   Future<ProcessResult> processImage({
@@ -27,7 +28,7 @@ class ProcessRepositoryImpl implements ProcessRepository {
   }) async {
     final file = File(imagePath);
     if (!await file.exists()) {
-      return ProcessResult(
+      return const ProcessResult(
         success: false,
         message: 'Gorsel dosyasi bulunamadi.',
       );
@@ -38,7 +39,7 @@ class ProcessRepositoryImpl implements ProcessRepository {
     final extractedText = await _geminiService.extractText(file);
 
     if (extractedText.trim().isEmpty) {
-      return ProcessResult(
+      return const ProcessResult(
         success: false,
         message: 'Gorselde okunabilir metin bulunamadi.',
       );
@@ -104,35 +105,29 @@ class ProcessRepositoryImpl implements ProcessRepository {
     required String extractedText,
     required String resultType,
   }) async {
-    final now = DateTime.now();
-    final model = ProcessResultModel(
-      id: '',
-      extractedText: extractedText,
-      resultType: resultType,
-      timestamp: now,
-      expiresAt: now.add(const Duration(hours: 24)),
-    );
-
-    await _firestore
-        .collection(AppFirestore.usersCollection)
-        .doc(deviceId)
-        .collection(AppFirestore.extractionsSubcollection)
-        .add(model.toMap());
+    final prefs = await SharedPreferences.getInstance();
+    final jsonList = prefs.getStringList(_extractionsKey) ?? [];
+    jsonList.add(jsonEncode({
+      'extractedText': extractedText,
+      'resultType': resultType,
+      'timestamp': DateTime.now().toIso8601String(),
+    }));
+    await prefs.setStringList(_extractionsKey, jsonList);
   }
 
   @override
   Future<List<ProcessResult>> getExtractions(String deviceId) async {
-    final now = DateTime.now();
-    final snapshot = await _firestore
-        .collection(AppFirestore.usersCollection)
-        .doc(deviceId)
-        .collection(AppFirestore.extractionsSubcollection)
-        .where('expiresAt', isGreaterThan: Timestamp.fromDate(now))
-        .orderBy('expiresAt', descending: true)
-        .get();
-
-    return snapshot.docs
-        .map((doc) => ProcessResultModel.fromFirestore(doc).toEntity())
-        .toList();
+    final prefs = await SharedPreferences.getInstance();
+    final jsonList = prefs.getStringList(_extractionsKey) ?? [];
+    return jsonList.map((json) {
+      final map = jsonDecode(json) as Map<String, dynamic>;
+      return ProcessResult(
+        success: true,
+        message: '',
+        extractedText: map['extractedText'] as String? ?? '',
+        resultType: ProcessResultType.text,
+        timestamp: DateTime.tryParse(map['timestamp'] as String? ?? ''),
+      );
+    }).toList();
   }
 }

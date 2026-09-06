@@ -103,25 +103,47 @@ class ProfileView extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 16),
-        Text(
-          profile.name,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.primaryNavy),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              profile.name,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primaryNavy,
+              ),
+            ),
+            const SizedBox(width: 6),
+            const Icon(Icons.verified, color: AppColors.primaryBlue, size: 22),
+          ],
         ),
         const SizedBox(height: 4),
         Text(
           profile.email,
-          style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
+          style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
             gradient: AppColors.primaryGradient,
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Text(
-            profile.badge,
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.star, color: Colors.white, size: 16),
+              const SizedBox(width: 6),
+              Text(
+                profile.badge,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -133,11 +155,11 @@ class ProfileView extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        gradient: AppColors.cardGradient,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryNavy.withValues(alpha: 0.1),
+            color: AppColors.primaryBlue.withValues(alpha: 0.1),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -147,10 +169,10 @@ class ProfileView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _buildStatItem('${profile.totalQuizzes}', 'Total Quizzes', AppColors.primaryBlue),
-          Container(width: 1, height: 50, color: Colors.grey.shade200),
-          _buildStatItem('${profile.accuracy.toInt()}%', 'Accuracy', AppColors.turquoise),
-          Container(width: 1, height: 50, color: Colors.grey.shade200),
-          _buildStatItem('${profile.streakDays} Days', 'Streak', AppColors.orange),
+          Container(width: 1, height: 50, color: AppColors.lightBlue),
+          _buildStatItem('${profile.accuracy.toInt()}%', 'Accuracy', AppColors.primaryNavy),
+          Container(width: 1, height: 50, color: AppColors.lightBlue),
+          _buildStatItem('${profile.streakDays}', 'Days Streak', AppColors.accentBlue),
         ],
       ),
     );
@@ -169,10 +191,14 @@ class ProfileView extends StatelessWidget {
   Widget _buildSettingsList(BuildContext context, UserProfile profile) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          BoxShadow(color: AppColors.cardShadow, blurRadius: 12, offset: const Offset(0, 4)),
+          BoxShadow(
+            color: AppColors.primaryBlue.withValues(alpha: 0.06),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
         ],
       ),
       child: Column(
@@ -180,26 +206,34 @@ class ProfileView extends StatelessWidget {
           _buildSettingsItem(
             icon: Icons.subscriptions,
             title: 'My Subscriptions',
+            iconColor: AppColors.primaryBlue,
             trailing: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
               decoration: BoxDecoration(
                 color: AppColors.success.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Text('Active',
-                  style: TextStyle(
-                      color: AppColors.success, fontWeight: FontWeight.w600, fontSize: 12)),
+              child: const Text(
+                'Active',
+                style: TextStyle(
+                  color: AppColors.success,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                ),
+              ),
             ),
           ),
           _buildSettingsItem(
             icon: Icons.settings,
             title: 'Settings',
+            iconColor: AppColors.grey,
             trailing: const Icon(Icons.chevron_right, color: AppColors.grey),
           ),
           _buildDarkModeItem(context, profile.isDarkMode),
           _buildSettingsItem(
             icon: Icons.help_outline,
             title: 'Help Center',
+            iconColor: AppColors.primaryBlue,
             trailing: const Icon(Icons.chevron_right, color: AppColors.grey),
           ),
           _buildSettingsItem(
@@ -209,6 +243,24 @@ class ProfileView extends StatelessWidget {
             titleColor: AppColors.error,
             trailing: const Icon(Icons.chevron_right, color: AppColors.error),
           ),
+          const SizedBox(height: 12),
+          Text(
+            'QuizAI Mobile v2.4.1',
+            style: TextStyle(fontSize: 12, color: AppColors.textLight),
+          ),
+          const SizedBox(height: 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.lock_outline, size: 12, color: AppColors.textLight),
+              const SizedBox(width: 4),
+              Text(
+                'Encrypted learning sync',
+                style: TextStyle(fontSize: 11, color: AppColors.textLight),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
         ],
       ),
     );
@@ -228,14 +280,18 @@ class ProfileView extends StatelessWidget {
         leading: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: (iconColor ?? AppColors.primaryBlue).withValues(alpha: 0.1),
+            color: AppColors.lightBlue,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: iconColor ?? AppColors.primaryBlue, size: 22),
         ),
-        title: Text(title,
-            style: TextStyle(
-                fontWeight: FontWeight.w600, color: titleColor ?? AppColors.primaryNavy)),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            color: titleColor ?? AppColors.primaryNavy,
+          ),
+        ),
         trailing: trailing,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
@@ -250,13 +306,15 @@ class ProfileView extends StatelessWidget {
         leading: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: AppColors.primaryNavy.withValues(alpha: 0.1),
+            color: AppColors.lightBlue,
             borderRadius: BorderRadius.circular(12),
           ),
           child: const Icon(Icons.dark_mode, color: AppColors.primaryNavy, size: 22),
         ),
-        title: const Text('Dark Mode',
-            style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.primaryNavy)),
+        title: const Text(
+          'Dark Mode',
+          style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.primaryNavy),
+        ),
         trailing: Switch(
           value: isDarkMode,
           onChanged: (_) => context.read<ProfileBloc>().add(ToggleDarkMode()),

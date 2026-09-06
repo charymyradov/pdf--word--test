@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/theme/app_theme.dart';
 import 'core/constants/app_colors.dart';
@@ -24,7 +22,6 @@ import 'features/profile/data/repositories/profile_repository_impl.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load();
-  await Firebase.initializeApp();
   runApp(const QuizAIApp());
 }
 
@@ -33,32 +30,27 @@ class QuizAIApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final firestore = FirebaseFirestore.instance;
     final deviceIdService = DeviceIdService();
     final imageCacheService = ImageCacheService();
     final geminiService = GeminiService();
+
+    final processRepo = ProcessRepositoryImpl(
+      geminiService: geminiService,
+      imageCacheService: imageCacheService,
+    );
+    final libraryRepo = LibraryRepositoryImpl();
+    final quizRepo = QuizRepositoryImpl();
+    final profileRepo = ProfileRepositoryImpl();
 
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<DeviceIdService>.value(value: deviceIdService),
         RepositoryProvider<ImageCacheService>.value(value: imageCacheService),
         RepositoryProvider<GeminiService>.value(value: geminiService),
-        RepositoryProvider<ProcessRepository>(
-          create: (_) => ProcessRepositoryImpl(
-            firestore: firestore,
-            geminiService: geminiService,
-            imageCacheService: imageCacheService,
-          ),
-        ),
-        RepositoryProvider<LibraryRepository>(
-          create: (_) => LibraryRepositoryImpl(firestore: firestore),
-        ),
-        RepositoryProvider<QuizRepository>(
-          create: (_) => QuizRepositoryImpl(firestore: firestore),
-        ),
-        RepositoryProvider<ProfileRepository>(
-          create: (_) => ProfileRepositoryImpl(firestore: firestore),
-        ),
+        RepositoryProvider<ProcessRepository>.value(value: processRepo),
+        RepositoryProvider<LibraryRepository>.value(value: libraryRepo),
+        RepositoryProvider<QuizRepository>.value(value: quizRepo),
+        RepositoryProvider<ProfileRepository>.value(value: profileRepo),
       ],
       child: MaterialApp(
         title: 'QuizAI',

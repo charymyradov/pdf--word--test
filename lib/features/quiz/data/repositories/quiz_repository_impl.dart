@@ -1,100 +1,81 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../domain/entities/quiz.dart';
 import '../../domain/repositories/quiz_repository.dart';
-import '../models/quiz_question_model.dart';
 import '../models/quiz_score_model.dart';
-import '../../../../core/constants/app_firestore.dart';
 
 class QuizRepositoryImpl implements QuizRepository {
-  final FirebaseFirestore _firestore;
-
-  QuizRepositoryImpl({required this._firestore});
+  static const String _scoresKey = 'quiz_scores';
 
   @override
-  Future<List<QuizQuestion>> loadQuestions() async {
-    final snapshot = await _firestore.collection(AppFirestore.questionsCollection).get();
-
-    if (snapshot.docs.isEmpty) {
-      return _getDefaultQuestions();
-    }
-
-    return snapshot.docs.map((doc) {
-      final model = QuizQuestionModel.fromMap(doc.id, doc.data());
-      return model.toEntity();
-    }).toList();
-  }
+  Future<List<QuizQuestion>> loadQuestions() async => _getDefaultQuestions();
 
   @override
   Future<List<QuizScore>> getPreviousScores(String deviceId) async {
-    final snapshot = await _firestore
-        .collection(AppFirestore.usersCollection)
-        .doc(deviceId)
-        .collection(AppFirestore.quizScoresSubcollection)
-        .orderBy(AppFirestore.fieldTimestamp, descending: true)
-        .limit(10)
-        .get();
-
-    return snapshot.docs
-        .map((doc) => QuizScoreModel.fromFirestore(doc).toEntity())
-        .toList();
+    final prefs = await SharedPreferences.getInstance();
+    final jsonList = prefs.getStringList(_scoresKey) ?? [];
+    final scores = jsonList.map((json) {
+      final map = jsonDecode(json) as Map<String, dynamic>;
+      return QuizScoreModel.fromMap(map['id'] as String, map).toEntity();
+    }).toList();
+    scores.sort((a, b) => b.timestamp.compareTo(a.timestamp));
+    return scores.take(10).toList();
   }
 
   @override
   Future<void> saveScore(String deviceId, QuizScore score) async {
+    final prefs = await SharedPreferences.getInstance();
     final model = QuizScoreModel(
-      id: '',
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
       subject: score.subject,
       correct: score.correct,
       total: score.total,
       timestamp: DateTime.now(),
     );
-
-    await _firestore
-        .collection(AppFirestore.usersCollection)
-        .doc(deviceId)
-        .collection(AppFirestore.quizScoresSubcollection)
-        .add(model.toMap());
+    final jsonList = prefs.getStringList(_scoresKey) ?? [];
+    jsonList.add(jsonEncode(model.toMap()));
+    await prefs.setStringList(_scoresKey, jsonList);
   }
 
   List<QuizQuestion> _getDefaultQuestions() {
     return const [
       QuizQuestion(
         id: 'default_1',
-        questionText: 'Hucresel solunumda mitokondrinin temel rolu nedir?',
+        questionText: 'Öýjükli dem alyşda mitohondriniň esasy roly nämedir?',
         category: 'Biology',
         subCategory: 'Cell Theory',
         answers: [
-          QuizAnswer(label: 'A', text: 'Protein sentezi', hexColor: '#1976D2'),
-          QuizAnswer(label: 'B', text: 'ATP uretimi (Mitokondria)', hexColor: '#00BCD4'),
-          QuizAnswer(label: 'C', text: 'DNA replikasyonu', hexColor: '#FF9800'),
-          QuizAnswer(label: 'D', text: 'Hucre bolunmesi', hexColor: '#7C4DFF'),
+          QuizAnswer(label: 'A', text: 'Belgi (protein) sintezi', hexColor: '#1976D2'),
+          QuizAnswer(label: 'B', text: 'ATF öndürmek (Mitohondriýa)', hexColor: '#00BCD4'),
+          QuizAnswer(label: 'C', text: 'DNK replikasiýasy', hexColor: '#FF9800'),
+          QuizAnswer(label: 'D', text: 'Öýjügiň bölünmegi', hexColor: '#7C4DFF'),
         ],
         correctIndex: 1,
         isDoublePoints: true,
       ),
       QuizQuestion(
         id: 'default_2',
-        questionText: 'Fotosentezde klorofilin gorevi nedir?',
+        questionText: 'Fotosintezde hlorofiliň wezipesi nämedir?',
         category: 'Biology',
         subCategory: 'Photosynthesis',
         answers: [
-          QuizAnswer(label: 'A', text: 'Isik enerjisini emmek', hexColor: '#1976D2'),
-          QuizAnswer(label: 'B', text: 'Su molekullerini parcalamak', hexColor: '#00BCD4'),
-          QuizAnswer(label: 'C', text: 'CO2 absorbe etmek', hexColor: '#FF9800'),
-          QuizAnswer(label: 'D', text: 'O2 uretmek', hexColor: '#7C4DFF'),
+          QuizAnswer(label: 'A', text: 'Ýagtylyk energiýasyny siňdirmek', hexColor: '#1976D2'),
+          QuizAnswer(label: 'B', text: 'Suw molekulalaryny dargatmak', hexColor: '#00BCD4'),
+          QuizAnswer(label: 'C', text: 'CO2-ni siňdirmek', hexColor: '#FF9800'),
+          QuizAnswer(label: 'D', text: 'O2 öndürmek', hexColor: '#7C4DFF'),
         ],
         correctIndex: 0,
       ),
       QuizQuestion(
         id: 'default_3',
-        questionText: 'Newton\'in hareket yasalarina gore, bir cisme etki eden net kuvvet sifirsa ne olur?',
+        questionText: 'Nýutonyň hereket kanunlaryna görä, bir jisme täsir edýän netijeli güýç nola deň bolsa näme bolar?',
         category: 'Physics',
         subCategory: 'Mechanics',
         answers: [
-          QuizAnswer(label: 'A', text: 'Hizlanir', hexColor: '#1976D2'),
-          QuizAnswer(label: 'B', text: 'Yavaslar', hexColor: '#00BCD4'),
-          QuizAnswer(label: 'C', text: 'Hareket durumunu korur', hexColor: '#FF9800'),
-          QuizAnswer(label: 'D', text: 'Donmeye baslar', hexColor: '#7C4DFF'),
+          QuizAnswer(label: 'A', text: 'Tizlener', hexColor: '#1976D2'),
+          QuizAnswer(label: 'B', text: 'Haýallar', hexColor: '#00BCD4'),
+          QuizAnswer(label: 'C', text: 'Hereket ýagdaýyny saklar', hexColor: '#FF9800'),
+          QuizAnswer(label: 'D', text: 'Aýlanyp başlar', hexColor: '#7C4DFF'),
         ],
         correctIndex: 2,
       ),

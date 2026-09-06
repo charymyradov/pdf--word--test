@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/entities/quiz.dart';
 
 class QuizScoreModel {
@@ -21,18 +20,17 @@ class QuizScoreModel {
       'subject': subject,
       'correct': correct,
       'total': total,
-      'timestamp': FieldValue.serverTimestamp(),
+      'timestamp': timestamp.toIso8601String(),
     };
   }
 
-  factory QuizScoreModel.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
+  factory QuizScoreModel.fromMap(String id, Map<String, dynamic> map) {
     return QuizScoreModel(
-      id: doc.id,
-      subject: data['subject'] as String? ?? '',
-      correct: data['correct'] as int? ?? 0,
-      total: data['total'] as int? ?? 0,
-      timestamp: (data['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      id: id,
+      subject: map['subject'] as String? ?? '',
+      correct: map['correct'] as int? ?? 0,
+      total: map['total'] as int? ?? 0,
+      timestamp: DateTime.tryParse(map['timestamp'] as String? ?? '') ?? DateTime.now(),
     );
   }
 

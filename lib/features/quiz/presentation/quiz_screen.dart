@@ -62,30 +62,49 @@ class QuizView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.emoji_events, color: AppColors.orange, size: 80),
+          const Icon(Icons.emoji_events, color: AppColors.softBlue, size: 80),
           const SizedBox(height: 24),
-          const Text('Quiz Tamamlandı!',
-              style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+          const Text(
+            'Quiz Tamamlandı!',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 12),
           Text(
             '${state.finalScore} Puan',
-            style: const TextStyle(color: AppColors.turquoise, fontSize: 36, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              color: AppColors.skyBlue,
+              fontSize: 36,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
             '${state.totalQuestions} soruda',
-            style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 16),
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.7),
+              fontSize: 16,
+            ),
           ),
           const SizedBox(height: 40),
           ElevatedButton(
             onPressed: () => context.read<QuizBloc>().add(StartQuiz()),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.turquoise,
+              backgroundColor: AppColors.accentBlue,
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             ),
-            child: const Text('Yeniden Başla',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
+            child: const Text(
+              'Yeniden Başla',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+            ),
           ),
         ],
       ),
@@ -143,7 +162,10 @@ class QuizView extends StatelessWidget {
                 Text(
                   _formatTimer(session.timeRemaining),
                   style: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
               ],
             ),
@@ -153,17 +175,20 @@ class QuizView extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: AppColors.turquoise.withValues(alpha: 0.2),
+                  color: AppColors.accentBlue.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.star, color: AppColors.turquoise, size: 18),
+                    const Icon(Icons.star, color: AppColors.skyBlue, size: 18),
                     const SizedBox(width: 4),
                     Text(
                       '${session.score} PTS',
                       style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
                     ),
                   ],
                 ),
@@ -172,7 +197,7 @@ class QuizView extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 decoration: BoxDecoration(
-                  color: AppColors.orange.withValues(alpha: 0.2),
+                  color: AppColors.warning.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(
@@ -182,7 +207,10 @@ class QuizView extends StatelessWidget {
                     Text(
                       'X${session.streak}',
                       style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
                     ),
                   ],
                 ),
@@ -203,12 +231,12 @@ class QuizView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Question ${session.currentQuestionIndex + 1} of ${session.totalQuestions}',
-                style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 13),
+                'Soru ${session.currentQuestionIndex + 1} / ${session.totalQuestions}',
+                style: const TextStyle(color: AppColors.softBlue, fontSize: 13),
               ),
               Text(
                 '${(((session.currentQuestionIndex + 1) / session.totalQuestions) * 100).toInt()}%',
-                style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 13),
+                style: const TextStyle(color: AppColors.softBlue, fontSize: 13),
               ),
             ],
           ),
@@ -219,7 +247,7 @@ class QuizView extends StatelessWidget {
               value: (session.currentQuestionIndex + 1) / session.totalQuestions,
               minHeight: 6,
               backgroundColor: Colors.white.withValues(alpha: 0.15),
-              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.turquoise),
+              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.accentBlue),
             ),
           ),
         ],
@@ -237,7 +265,7 @@ class QuizView extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
+            color: AppColors.primaryNavy.withValues(alpha: 0.15),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -251,13 +279,16 @@ class QuizView extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: AppColors.teal.withValues(alpha: 0.1),
+                  color: AppColors.lightBlue,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
                   '${question.category} • ${question.subCategory}',
                   style: const TextStyle(
-                      color: AppColors.teal, fontWeight: FontWeight.w600, fontSize: 12),
+                    color: AppColors.primaryBlue,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                  ),
                 ),
               ),
               if (question.isDoublePoints) ...[
@@ -265,13 +296,16 @@ class QuizView extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
-                    color: AppColors.orange.withValues(alpha: 0.1),
+                    color: AppColors.warning.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Text(
                     '🎯 İkili Puan',
                     style: TextStyle(
-                        color: AppColors.orange, fontWeight: FontWeight.w600, fontSize: 12),
+                      color: AppColors.warning,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
               ],
@@ -297,7 +331,6 @@ class QuizView extends StatelessWidget {
     return Column(
       children: List.generate(question.answers.length, (index) {
         final answer = question.answers[index];
-        final answerColor = _hexToColor(answer.hexColor);
         final isSelected = session.selectedAnswer == index;
         final isCorrect = index == question.correctIndex;
         final showResult = session.answered;
@@ -318,8 +351,8 @@ class QuizView extends StatelessWidget {
                         ? AppColors.success.withValues(alpha: 0.15)
                         : isSelected
                             ? AppColors.error.withValues(alpha: 0.15)
-                            : answerColor.withValues(alpha: 0.08))
-                    : (isSelected ? AppColors.turquoise.withValues(alpha: 0.15) : answerColor.withValues(alpha: 0.08)),
+                            : Colors.white)
+                    : (isSelected ? AppColors.lightBlue : Colors.white),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: showResult
@@ -327,8 +360,8 @@ class QuizView extends StatelessWidget {
                           ? AppColors.success
                           : isSelected
                               ? AppColors.error
-                              : Colors.transparent)
-                      : (isSelected ? AppColors.turquoise : Colors.transparent),
+                              : AppColors.lightBlue)
+                      : (isSelected ? AppColors.primaryBlue : AppColors.lightBlue),
                   width: 2,
                 ),
               ),
@@ -343,8 +376,8 @@ class QuizView extends StatelessWidget {
                               ? AppColors.success
                               : isSelected
                                   ? AppColors.error
-                                  : AppColors.primaryBlue.withValues(alpha: 0.1))
-                          : (isSelected ? AppColors.turquoise : AppColors.primaryBlue.withValues(alpha: 0.1)),
+                                  : AppColors.lightBlue)
+                          : (isSelected ? AppColors.primaryBlue : AppColors.lightBlue),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Center(
@@ -356,6 +389,7 @@ class QuizView extends StatelessWidget {
                                   answer.label,
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
+                                    fontSize: 14,
                                     color: isSelected ? Colors.white : AppColors.primaryBlue,
                                   ),
                                 ),
@@ -391,16 +425,20 @@ class QuizView extends StatelessWidget {
             ? () => context.read<QuizBloc>().add(NextQuestion())
             : null,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.turquoise,
+          backgroundColor: AppColors.accentBlue,
           padding: const EdgeInsets.symmetric(vertical: 18),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           elevation: 4,
         ),
         child: Text(
           session.currentQuestionIndex + 1 < session.totalQuestions
-              ? 'Next Question →'
+              ? 'Sonraki Soru →'
               : 'Quiz\'i Tamamla',
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
       ),
     );
@@ -410,10 +448,13 @@ class QuizView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'Önceki Quiz Skorları',
           style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.7), fontSize: 14, fontWeight: FontWeight.w600),
+            color: AppColors.softBlue,
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         const SizedBox(height: 12),
         SizedBox(
@@ -429,19 +470,26 @@ class QuizView extends StatelessWidget {
                 width: 120,
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: scoreColor.withValues(alpha: 0.15),
+                  color: scoreColor.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: scoreColor.withValues(alpha: 0.3)),
+                  border: Border.all(color: scoreColor.withValues(alpha: 0.4)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(score.subject,
-                        style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 12)),
-                    Text(score.scoreText,
-                        style: const TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
+                    Text(
+                      score.subject,
+                      style: const TextStyle(color: AppColors.softBlue, fontSize: 12),
+                    ),
+                    Text(
+                      score.scoreText,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
                   ],
                 ),
               );
@@ -458,19 +506,13 @@ class QuizView extends StatelessWidget {
     return '$mins:$secs';
   }
 
-  Color _hexToColor(String hex) {
-    hex = hex.replaceFirst('#', '');
-    if (hex.length == 6) hex = 'FF$hex';
-    return Color(int.parse(hex, radix: 16));
-  }
-
   Color _getScoreColor(int index) {
     const colors = [
-      AppColors.turquoise,
       AppColors.primaryBlue,
-      AppColors.orange,
-      AppColors.teal,
+      AppColors.accentBlue,
       AppColors.primaryNavy,
+      AppColors.softBlue,
+      AppColors.skyBlue,
     ];
     return colors[index % colors.length];
   }

@@ -11,7 +11,7 @@ class AppTheme {
       colorScheme: ColorScheme.fromSeed(
         seedColor: AppColors.primaryBlue,
         primary: AppColors.primaryBlue,
-        secondary: AppColors.turquoise,
+        secondary: AppColors.accentBlue,
         surface: AppColors.white,
       ),
       appBarTheme: const AppBarTheme(

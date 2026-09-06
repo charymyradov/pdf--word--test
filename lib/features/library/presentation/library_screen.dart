@@ -89,20 +89,26 @@ class LibraryView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppColors.lightBlue, AppColors.white],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
+        color: Colors.white,
         boxShadow: [
-          BoxShadow(color: AppColors.cardShadow, blurRadius: 8, offset: const Offset(0, 2)),
+          BoxShadow(
+            color: AppColors.primaryBlue.withValues(alpha: 0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text('Kütüphane',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.primaryNavy)),
+          const Text(
+            'Library',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primaryNavy,
+            ),
+          ),
           IconButton(
             onPressed: () {},
             icon: const Icon(Icons.tune, color: AppColors.primaryBlue),
@@ -115,23 +121,28 @@ class LibraryView extends StatelessWidget {
   Widget _buildSearchBar(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(color: AppColors.cardShadow, blurRadius: 8, offset: const Offset(0, 2)),
+          BoxShadow(
+            color: AppColors.primaryBlue.withValues(alpha: 0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: TextField(
         onChanged: (value) => context.read<LibraryBloc>().add(SearchQueryChanged(value)),
         decoration: InputDecoration(
-          hintText: 'Quiz veya konu ara...',
-          prefixIcon: const Icon(Icons.search, color: AppColors.grey),
+          hintText: 'Search subjects, decks, or tags...',
+          hintStyle: TextStyle(color: AppColors.textLight),
+          prefixIcon: Icon(Icons.search, color: AppColors.textLight),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide.none,
           ),
           filled: true,
-          fillColor: AppColors.white,
+          fillColor: Colors.white,
           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         ),
       ),
@@ -155,16 +166,16 @@ class LibraryView extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   decoration: BoxDecoration(
-                    color: isSelected ? AppColors.primaryBlue : AppColors.white,
+                    color: isSelected ? AppColors.primaryBlue : Colors.white,
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: isSelected ? AppColors.primaryBlue : Colors.grey.shade200,
+                      color: isSelected ? AppColors.primaryBlue : AppColors.lightBlue,
                     ),
                   ),
                   child: Text(
                     category.label,
                     style: TextStyle(
-                      color: isSelected ? Colors.white : Colors.grey.shade600,
+                      color: isSelected ? Colors.white : AppColors.textSecondary,
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
                     ),
@@ -183,11 +194,11 @@ class LibraryView extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: AppColors.primaryGradient,
+        gradient: AppColors.navyGradient,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryBlue.withValues(alpha: 0.3),
+            color: AppColors.primaryNavy.withValues(alpha: 0.3),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
@@ -199,37 +210,61 @@ class LibraryView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Toplam Flashcard', style: TextStyle(color: Colors.white70, fontSize: 14)),
-                const SizedBox(height: 4),
-                Text(
-                  '${state.totalFlashcards}',
-                  style: const TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold),
+                Row(
+                  children: [
+                    const Icon(Icons.bolt, color: AppColors.warning, size: 18),
+                    const SizedBox(width: 6),
+                    const Text(
+                      'SMART MASTERY',
+                      style: TextStyle(
+                        color: AppColors.warning,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Mastery: %${(state.masteryLevel * 100).toInt()}',
-                  style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 13),
+                  '${state.totalFlashcards} Total Flashcards',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  '4 active decks ready for quick review',
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.7),
+                    fontSize: 13,
+                  ),
                 ),
               ],
             ),
           ),
           SizedBox(
-            width: 100,
-            height: 100,
+            width: 80,
+            height: 80,
             child: Stack(
               fit: StackFit.expand,
               children: [
                 CircularProgressIndicator(
                   value: state.masteryLevel,
-                  strokeWidth: 10,
+                  strokeWidth: 8,
                   backgroundColor: Colors.white.withValues(alpha: 0.2),
-                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                  valueColor: const AlwaysStoppedAnimation<Color>(AppColors.skyBlue),
                 ),
                 Center(
                   child: Text(
                     '${(state.masteryLevel * 100).toInt()}%',
                     style: const TextStyle(
-                        color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
@@ -258,22 +293,21 @@ class LibraryView extends StatelessWidget {
   }
 
   Widget _buildSubjectCard(BuildContext context, Subject subject, int index) {
-    final color = _hexToColor(subject.hexColor);
     final icon = _iconDataFromKey(subject.iconKey);
+    final subtitle = _getSubtitle(subject.name);
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            color.withValues(alpha: 0.1),
-            color.withValues(alpha: 0.05),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryBlue.withValues(alpha: 0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -285,35 +319,72 @@ class LibraryView extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.15),
+                  color: AppColors.lightBlue,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(icon, color: color, size: 24),
+                child: Icon(icon, color: AppColors.primaryBlue, size: 22),
               ),
               GestureDetector(
                 onTap: () => context.read<LibraryBloc>().add(ToggleFavorite(index)),
                 child: Icon(
                   subject.isFavorite ? Icons.star : Icons.star_border,
-                  color: subject.isFavorite ? AppColors.orange : Colors.grey.shade400,
-                  size: 22,
+                  color: subject.isFavorite ? AppColors.warning : AppColors.lightBlue,
+                  size: 20,
                 ),
               ),
             ],
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(subject.name,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 15, color: AppColors.primaryNavy)),
-              const SizedBox(height: 4),
-              Text('${subject.questionCount} soru',
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade500)),
-            ],
+          const SizedBox(height: 8),
+          Text(
+            subject.name,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+              color: AppColors.primaryNavy,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            subtitle,
+            style: TextStyle(fontSize: 11, color: AppColors.textLight),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(
+              color: AppColors.lightBlue,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              '${subject.questionCount} Questions',
+              style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primaryBlue,
+              ),
+            ),
           ),
         ],
       ),
     );
+  }
+
+  String _getSubtitle(String subjectName) {
+    final subtitles = {
+      'Matematik': 'Algebra & Calculus',
+      'Fizik': 'Mechanics & Waves',
+      'Kimya': 'Organic & Inorganic',
+      'Biyoloji': 'Genetics & Ecology',
+      'Tarih': 'Modern Era',
+      'Edebiyat': 'World Classics',
+      'Bilgisayar Bilimi': 'Algorithms & AI',
+      'Ingilizce': 'Grammar & Vocab',
+      'Rusca': 'Basic Conversations',
+      'Programlama': 'Web & Mobile Dev',
+      'Müzik': 'Theory & History',
+      'Cografya': 'Physical & Human',
+    };
+    return subtitles[subjectName] ?? 'General Topics';
   }
 
   Color _hexToColor(String hex) {
@@ -344,7 +415,7 @@ class LibraryView extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         gradient: AppColors.primaryGradient,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: AppColors.primaryBlue.withValues(alpha: 0.4),
@@ -357,9 +428,15 @@ class LibraryView extends StatelessWidget {
         onPressed: () {},
         backgroundColor: Colors.transparent,
         elevation: 0,
-        icon: const Icon(Icons.auto_awesome, color: Colors.white),
-        label: const Text('AI ile Kart Oluştur',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        icon: const Icon(Icons.auto_awesome, color: Colors.white, size: 20),
+        label: const Text(
+          'Generate Deck with AI',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
+        ),
       ),
     );
   }
