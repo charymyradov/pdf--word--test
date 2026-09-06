@@ -7,9 +7,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final ProcessRepository _repository;
   final String deviceId;
 
-  HomeBloc({required ProcessRepository repository, required this.deviceId})
-      : _repository = repository,
-        super(HomeInitial()) {
+  HomeBloc({required this._repository, required this.deviceId})
+      : super(HomeInitial()) {
     on<ImagePicked>(_onImagePicked);
     on<ImageCleared>(_onImageCleared);
     on<ProcessTypeSelected>(_onProcessTypeSelected);

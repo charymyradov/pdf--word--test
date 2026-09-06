@@ -15,12 +15,10 @@ class ProcessRepositoryImpl implements ProcessRepository {
   final ImageCacheService _imageCacheService;
 
   ProcessRepositoryImpl({
-    required FirebaseFirestore firestore,
-    required GeminiService geminiService,
-    required ImageCacheService imageCacheService,
-  })  : _firestore = firestore,
-        _geminiService = geminiService,
-        _imageCacheService = imageCacheService;
+    required this._firestore,
+    required this._geminiService,
+    required this._imageCacheService,
+  });
 
   @override
   Future<ProcessResult> processImage({

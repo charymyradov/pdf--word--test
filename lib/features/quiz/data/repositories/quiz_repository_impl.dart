@@ -8,8 +8,7 @@ import '../../../../core/constants/app_firestore.dart';
 class QuizRepositoryImpl implements QuizRepository {
   final FirebaseFirestore _firestore;
 
-  QuizRepositoryImpl({required FirebaseFirestore firestore})
-      : _firestore = firestore;
+  QuizRepositoryImpl({required this._firestore});
 
   @override
   Future<List<QuizQuestion>> loadQuestions() async {

@@ -10,9 +10,8 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
   final String deviceId;
   Timer? _timer;
 
-  QuizBloc({required QuizRepository repository, required this.deviceId})
-      : _repository = repository,
-        super(QuizInitial()) {
+  QuizBloc({required this._repository, required this.deviceId})
+      : super(QuizInitial()) {
     on<StartQuiz>(_onStartQuiz);
     on<AnswerQuestion>(_onAnswerQuestion);
     on<NextQuestion>(_onNextQuestion);

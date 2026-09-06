@@ -228,7 +228,7 @@ class HomeView extends StatelessWidget {
           Image.file(
             File(imagePath),
             fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) => Container(
+            errorBuilder: (_, a, b) => Container(
               color: AppColors.lightBlue,
               child: const Center(child: Icon(Icons.broken_image, size: 80, color: AppColors.primaryBlue)),
             ),
