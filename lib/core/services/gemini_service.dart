@@ -1,14 +1,21 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:firebase_ai/firebase_ai.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 
 class GeminiService {
   late final GenerativeModel _model;
 
   GeminiService() {
-    final googleAI = FirebaseAI.googleAI();
-    _model = googleAI.generativeModel(model: 'gemini-2.5-flash');
+    final apiKey = dotenv.env['GEMINI_API_KEY'] ?? '';
+    if (apiKey.isEmpty) {
+      throw Exception('GEMINI_API_KEY not found in .env file');
+    }
+    _model = GenerativeModel(
+      model: 'gemini-2.5-flash',
+      apiKey: apiKey,
+    );
   }
 
   Future<String> extractText(File imageFile) async {
@@ -22,7 +29,7 @@ class GeminiService {
           'başka bir yorum, açıklama veya ekleme yapma. Metni olduğu gibi, '
           'paragraf ve satır düzenine sadık kalarak yaz.',
         ),
-        InlineDataPart(mimeType, imageBytes),
+        DataPart(mimeType, imageBytes),
       ]),
     ]);
 

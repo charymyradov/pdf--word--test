@@ -14,7 +14,8 @@ dependencies:
   equatable: ^2.0.7
   firebase_core: ^4.10.0
   cloud_firestore: ^6.9.0
-  firebase_ai: ^3.12.2
+  google_generative_ai: ^0.4.7
+  flutter_dotenv: ^5.2.0
   uuid: ^4.5.1
   shared_preferences: ^2.5.3
   path_provider: ^2.1.5
@@ -28,3 +29,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - .env
