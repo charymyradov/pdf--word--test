@@ -17,6 +17,7 @@ class QuizScoreModel {
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'subject': subject,
       'correct': correct,
       'total': total,

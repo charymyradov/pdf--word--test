@@ -42,11 +42,14 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
     if (currentState is! QuizPlaying || currentState.session.answered) return;
 
     final session = currentState.session;
+    if (event.answerIndex < 0 || event.answerIndex >= session.currentQuestion.answers.length) return;
+
     final isCorrect = event.answerIndex == session.currentQuestion.correctIndex;
     final newScore = isCorrect
         ? session.score + (session.currentQuestion.isDoublePoints ? 400 : 200)
         : session.score;
     final newStreak = isCorrect ? session.streak + 1 : 0;
+    final newCorrectCount = isCorrect ? session.correctCount + 1 : session.correctCount;
 
     emit(QuizPlaying(
       session: session.copyWith(
@@ -54,6 +57,7 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
         answered: true,
         score: newScore,
         streak: newStreak,
+        correctCount: newCorrectCount,
       ),
       previousScores: currentState.previousScores,
     ));
@@ -72,7 +76,7 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
         QuizScore(
           id: '',
           subject: session.currentQuestion.category,
-          correct: session.score ~/ 200,
+          correct: session.correctCount,
           total: session.totalQuestions,
           timestamp: DateTime.now(),
         ),
@@ -99,8 +103,18 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
     if (currentState is! QuizPlaying) return;
 
     final session = currentState.session;
-    if (session.timeRemaining <= 0) {
+    if (session.timeRemaining <= 1) {
       _timer?.cancel();
+      if (!session.answered) {
+        emit(QuizPlaying(
+          session: session.copyWith(
+            timeRemaining: 0,
+            answered: true,
+            selectedAnswer: () => null,
+          ),
+          previousScores: currentState.previousScores,
+        ));
+      }
       return;
     }
 

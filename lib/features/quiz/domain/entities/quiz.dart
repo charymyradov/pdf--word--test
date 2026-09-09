@@ -35,6 +35,7 @@ class QuizSession {
   final int currentQuestionIndex;
   final int score;
   final int streak;
+  final int correctCount;
   final int timeRemaining;
   final int? selectedAnswer;
   final bool answered;
@@ -44,6 +45,7 @@ class QuizSession {
     this.currentQuestionIndex = 0,
     this.score = 0,
     this.streak = 0,
+    this.correctCount = 0,
     this.timeRemaining = 45,
     this.selectedAnswer,
     this.answered = false,
@@ -57,6 +59,7 @@ class QuizSession {
     int? currentQuestionIndex,
     int? score,
     int? streak,
+    int? correctCount,
     int? timeRemaining,
     int? Function()? selectedAnswer,
     bool? answered,
@@ -66,6 +69,7 @@ class QuizSession {
       currentQuestionIndex: currentQuestionIndex ?? this.currentQuestionIndex,
       score: score ?? this.score,
       streak: streak ?? this.streak,
+      correctCount: correctCount ?? this.correctCount,
       timeRemaining: timeRemaining ?? this.timeRemaining,
       selectedAnswer: selectedAnswer != null ? selectedAnswer() : this.selectedAnswer,
       answered: answered ?? this.answered,
