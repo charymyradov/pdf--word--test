@@ -16,8 +16,9 @@ class QuizPlaying extends QuizState {
 class QuizCompleted extends QuizState {
   final int finalScore;
   final int totalQuestions;
+  final int correctCount;
 
-  QuizCompleted({required this.finalScore, required this.totalQuestions});
+  QuizCompleted({required this.finalScore, required this.totalQuestions, required this.correctCount});
 }
 
 class QuizError extends QuizState {

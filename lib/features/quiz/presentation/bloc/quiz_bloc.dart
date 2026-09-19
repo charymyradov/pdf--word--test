@@ -45,9 +45,9 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
     if (event.answerIndex < 0 || event.answerIndex >= session.currentQuestion.answers.length) return;
 
     final isCorrect = event.answerIndex == session.currentQuestion.correctIndex;
-    final newScore = isCorrect
-        ? session.score + (session.currentQuestion.isDoublePoints ? 400 : 200)
-        : session.score;
+    final basePoints = session.currentQuestion.isDoublePoints ? 400 : 200;
+    final streakBonus = isCorrect && session.streak >= 2 ? (session.streak - 1) * 50 : 0;
+    final newScore = isCorrect ? session.score + basePoints + streakBonus : session.score;
     final newStreak = isCorrect ? session.streak + 1 : 0;
     final newCorrectCount = isCorrect ? session.correctCount + 1 : session.correctCount;
 
@@ -82,7 +82,11 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
         ),
       );
 
-      emit(QuizCompleted(finalScore: session.score, totalQuestions: session.totalQuestions));
+      emit(QuizCompleted(
+        finalScore: session.score,
+        totalQuestions: session.totalQuestions,
+        correctCount: session.correctCount,
+      ));
       return;
     }
 

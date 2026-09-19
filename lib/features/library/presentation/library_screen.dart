@@ -387,12 +387,6 @@ class LibraryView extends StatelessWidget {
     return subtitles[subjectName] ?? 'General Topics';
   }
 
-  Color _hexToColor(String hex) {
-    hex = hex.replaceFirst('#', '');
-    if (hex.length == 6) hex = 'FF$hex';
-    return Color(int.parse(hex, radix: 16));
-  }
-
   IconData _iconDataFromKey(String key) {
     final iconMap = <String, IconData>{
       'calculate': Icons.calculate,

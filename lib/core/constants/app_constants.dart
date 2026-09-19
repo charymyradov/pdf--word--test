@@ -1,6 +1,6 @@
 class AppConstants {
   static const String appName = 'QuizAI';
-  static const String appTagline = 'Learn Smarter with AI'; // Isleseňiz: 'AI bilen has akylly öwrenin'
+  static const String appTagline = 'Learn Smarter with AI';
 
   static const String homeTitle = 'Baş sahypa';
   static const String libraryTitle = 'Kitaphana';
@@ -16,7 +16,7 @@ class AppConstants {
 
   static const String processingImage = 'Surat işlenilýär...';
   static const String extractingText = 'Tekst alynýar...';
-  static const String generatingQuiz = 'Kwiz taýýarlanýar...';
+  static const String generatingQuiz = 'Test taýýarlanýar...';
   static const String creatingFile = 'Faýl döredilýär...';
   static const String successMessage = 'Amal üstünlikli tamamlandy!';
   static const String errorMessage = 'Ýalňyşlyk ýüze çykdy. Haýyş, täzeden barlap görüň.';

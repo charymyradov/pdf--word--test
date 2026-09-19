@@ -25,8 +25,37 @@ void main() async {
   runApp(const QuizAIApp());
 }
 
-class QuizAIApp extends StatelessWidget {
+class QuizAIApp extends StatefulWidget {
   const QuizAIApp({super.key});
+
+  @override
+  State<QuizAIApp> createState() => _QuizAIAppState();
+}
+
+class _QuizAIAppState extends State<QuizAIApp> {
+  ThemeMode _themeMode = ThemeMode.light;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadThemeMode();
+  }
+
+  Future<void> _loadThemeMode() async {
+    final deviceIdService = DeviceIdService();
+    final deviceId = await deviceIdService.getDeviceId();
+    final profileRepo = ProfileRepositoryImpl();
+    final profile = await profileRepo.getProfile(deviceId);
+    if (mounted) {
+      setState(() {
+        _themeMode = profile.isDarkMode ? ThemeMode.dark : ThemeMode.light;
+      });
+    }
+  }
+
+  void _onThemeChanged(ThemeMode mode) {
+    setState(() => _themeMode = mode);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,18 +81,37 @@ class QuizAIApp extends StatelessWidget {
         RepositoryProvider<QuizRepository>.value(value: quizRepo),
         RepositoryProvider<ProfileRepository>.value(value: profileRepo),
       ],
-      child: MaterialApp(
-        title: 'QuizAI',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme,
-        home: const MainNavigation(),
+      child: _QuizApp(
+        themeMode: _themeMode,
+        onThemeChanged: _onThemeChanged,
       ),
     );
   }
 }
 
+class _QuizApp extends StatelessWidget {
+  final ThemeMode themeMode;
+  final ValueChanged<ThemeMode> onThemeChanged;
+
+  const _QuizApp({required this.themeMode, required this.onThemeChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'QuizAI',
+      debugShowCheckedModeBanner: false,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: themeMode,
+      home: MainNavigation(onThemeChanged: onThemeChanged),
+    );
+  }
+}
+
 class MainNavigation extends StatefulWidget {
-  const MainNavigation({super.key});
+  final ValueChanged<ThemeMode> onThemeChanged;
+
+  const MainNavigation({super.key, required this.onThemeChanged});
 
   @override
   State<MainNavigation> createState() => _MainNavigationState();
