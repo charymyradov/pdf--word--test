@@ -16,13 +16,15 @@ class QuizScreen extends StatelessWidget {
       future: context.read<DeviceIdService>().getDeviceId(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          return const Scaffold(
+            backgroundColor: AppColors.primaryNavy,
+            body: Center(child: CircularProgressIndicator(color: Colors.white)),
+          );
         }
         return BlocProvider(
-          create: (context) => QuizBloc(
-            repository: context.read(),
-            deviceId: snapshot.data!,
-          )..add(StartQuiz()),
+          create: (context) =>
+              QuizBloc(repository: context.read(), deviceId: snapshot.data!)
+                ..add(StartQuiz()),
           child: const QuizView(),
         );
       },
@@ -37,21 +39,89 @@ class QuizView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.primaryNavy,
-      body: SafeArea(
-        child: BlocConsumer<QuizBloc, QuizState>(
-          listener: (context, state) {},
-          builder: (context, state) {
-            if (state is QuizLoading) {
-              return const Center(child: CircularProgressIndicator(color: Colors.white));
-            }
-            if (state is QuizCompleted) {
-              return _buildCompletedView(context, state);
-            }
-            if (state is QuizPlaying) {
-              return _buildPlayingView(context, state);
-            }
-            return const SizedBox.shrink();
-          },
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              AppColors.primaryNavy,
+              Color(0xFF214C7D),
+              Color(0xFF1F5EA8),
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: BlocConsumer<QuizBloc, QuizState>(
+            listener: (context, state) {},
+            builder: (context, state) {
+              if (state is QuizLoading) {
+                return const Center(
+                  child: CircularProgressIndicator(color: Colors.white),
+                );
+              }
+              if (state is QuizError) {
+                return _buildErrorView(context, state.message);
+              }
+              if (state is QuizCompleted) {
+                return _buildCompletedView(context, state);
+              }
+              if (state is QuizPlaying) {
+                return _buildPlayingView(context, state);
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildErrorView(BuildContext context, String message) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.error_outline_rounded,
+                color: AppColors.error,
+                size: 64,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                message,
+                style: const TextStyle(color: Colors.white, fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () => context.read<QuizBloc>().add(StartQuiz()),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.accentBlue,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 14,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  'Tekrar Dene',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -59,54 +129,91 @@ class QuizView extends StatelessWidget {
 
   Widget _buildCompletedView(BuildContext context, QuizCompleted state) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.emoji_events, color: AppColors.softBlue, size: 80),
-          const SizedBox(height: 24),
-          const Text(
-            'Quiz Tamamlandı!',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            '${state.finalScore} Puan',
-            style: const TextStyle(
-              color: AppColors.skyBlue,
-              fontSize: 36,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            '${state.totalQuestions} soruda',
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.7),
-              fontSize: 16,
-            ),
-          ),
-          const SizedBox(height: 40),
-          ElevatedButton(
-            onPressed: () => context.read<QuizBloc>().add(StartQuiz()),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.accentBlue,
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            ),
-            child: const Text(
-              'Yeniden Başla',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(28),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(28),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.12),
+                blurRadius: 24,
+                offset: const Offset(0, 12),
               ),
-            ),
+            ],
           ),
-        ],
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 92,
+                height: 92,
+                decoration: BoxDecoration(
+                  gradient: AppColors.primaryGradient,
+                  borderRadius: BorderRadius.circular(28),
+                ),
+                child: const Icon(
+                  Icons.emoji_events_rounded,
+                  color: Colors.white,
+                  size: 50,
+                ),
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                'Quiz Tamamlandı!',
+                style: TextStyle(
+                  color: AppColors.primaryNavy,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                '${state.finalScore} Puan',
+                style: const TextStyle(
+                  color: AppColors.primaryBlue,
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '${state.correctCount}/${state.totalQuestions} Doğru',
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 32),
+              ElevatedButton(
+                onPressed: () => context.read<QuizBloc>().add(StartQuiz()),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.accentBlue,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 42,
+                    vertical: 16,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  elevation: 4,
+                ),
+                child: const Text(
+                  'Yeniden Başla',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -119,12 +226,47 @@ class QuizView extends StatelessWidget {
         _buildProgressSection(session),
         Expanded(
           child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
-                const SizedBox(height: 16),
+                const SizedBox(height: 18),
                 _buildQuestionCard(session),
-                const SizedBox(height: 20),
+                const SizedBox(height: 18),
+                if (session.answered &&
+                    session.selectedAnswer == null &&
+                    session.timeRemaining == 0)
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(12),
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: AppColors.warning.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: AppColors.warning.withValues(alpha: 0.4),
+                      ),
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.timer_off_rounded,
+                          color: AppColors.warning,
+                          size: 18,
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          'Süre doldu! Doğru cevap yeşil ile gösterildi.',
+                          style: TextStyle(
+                            color: AppColors.warning,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 _buildAnswerChoices(context, session),
                 const SizedBox(height: 24),
                 _buildNextButton(context, session),
@@ -145,19 +287,34 @@ class QuizView extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 20),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(
+                Icons.arrow_back_ios_new_rounded,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.15),
+              color: Colors.white.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
             ),
             child: Row(
               children: [
-                const Icon(Icons.access_time, color: Colors.white, size: 18),
+                const Icon(
+                  Icons.access_time_rounded,
+                  color: Colors.white,
+                  size: 18,
+                ),
                 const SizedBox(width: 6),
                 Text(
                   _formatTimer(session.timeRemaining),
@@ -173,14 +330,24 @@ class QuizView extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
-                  color: AppColors.accentBlue.withValues(alpha: 0.3),
+                  color: AppColors.accentBlue.withValues(alpha: 0.25),
                   borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: AppColors.softBlue.withValues(alpha: 0.35),
+                  ),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.star, color: AppColors.skyBlue, size: 18),
+                    const Icon(
+                      Icons.star_rounded,
+                      color: AppColors.skyBlue,
+                      size: 18,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       '${session.score} PTS',
@@ -195,10 +362,16 @@ class QuizView extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
-                  color: AppColors.warning.withValues(alpha: 0.3),
+                  color: AppColors.warning.withValues(alpha: 0.22),
                   borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: AppColors.warning.withValues(alpha: 0.35),
+                  ),
                 ),
                 child: Row(
                   children: [
@@ -223,6 +396,10 @@ class QuizView extends StatelessWidget {
   }
 
   Widget _buildProgressSection(QuizSession session) {
+    final progress = session.totalQuestions <= 0
+        ? 0.0
+        : (session.currentQuestionIndex + 1) / session.totalQuestions;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -230,24 +407,34 @@ class QuizView extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Soru ${session.currentQuestionIndex + 1} / ${session.totalQuestions}',
-                style: const TextStyle(color: AppColors.softBlue, fontSize: 13),
+              const Text(
+                'Aktif Soru',
+                style: TextStyle(
+                  color: AppColors.softBlue,
+                  fontSize: 12,
+                  letterSpacing: 0.4,
+                ),
               ),
               Text(
-                '${(((session.currentQuestionIndex + 1) / session.totalQuestions) * 100).toInt()}%',
-                style: const TextStyle(color: AppColors.softBlue, fontSize: 13),
+                '${session.currentQuestionIndex + 1}/${session.totalQuestions}',
+                style: const TextStyle(
+                  color: AppColors.softBlue,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),
           const SizedBox(height: 8),
           ClipRRect(
-            borderRadius: BorderRadius.circular(6),
+            borderRadius: BorderRadius.circular(10),
             child: LinearProgressIndicator(
-              value: (session.currentQuestionIndex + 1) / session.totalQuestions,
-              minHeight: 6,
-              backgroundColor: Colors.white.withValues(alpha: 0.15),
-              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.accentBlue),
+              value: progress.clamp(0.0, 1.0),
+              minHeight: 8,
+              backgroundColor: Colors.white.withValues(alpha: 0.12),
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                AppColors.skyBlue,
+              ),
             ),
           ),
         ],
@@ -261,12 +448,12 @@ class QuizView extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        gradient: AppColors.cardGradient,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryNavy.withValues(alpha: 0.15),
-            blurRadius: 20,
+            color: AppColors.primaryNavy.withValues(alpha: 0.12),
+            blurRadius: 18,
             offset: const Offset(0, 10),
           ),
         ],
@@ -277,7 +464,10 @@ class QuizView extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.lightBlue,
                   borderRadius: BorderRadius.circular(20),
@@ -294,9 +484,12 @@ class QuizView extends StatelessWidget {
               if (question.isDoublePoints) ...[
                 const SizedBox(width: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
-                    color: AppColors.warning.withValues(alpha: 0.15),
+                    color: AppColors.warning.withValues(alpha: 0.18),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Text(
@@ -316,9 +509,9 @@ class QuizView extends StatelessWidget {
             question.questionText,
             style: const TextStyle(
               fontSize: 18,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
               color: AppColors.primaryNavy,
-              height: 1.4,
+              height: 1.45,
             ),
           ),
         ],
@@ -334,6 +527,7 @@ class QuizView extends StatelessWidget {
         final isSelected = session.selectedAnswer == index;
         final isCorrect = index == question.correctIndex;
         final showResult = session.answered;
+        final answerColor = _parseHexColor(answer.hexColor);
 
         return Padding(
           padding: const EdgeInsets.only(bottom: 12),
@@ -348,66 +542,82 @@ class QuizView extends StatelessWidget {
               decoration: BoxDecoration(
                 color: showResult
                     ? (isCorrect
-                        ? AppColors.success.withValues(alpha: 0.15)
-                        : isSelected
-                            ? AppColors.error.withValues(alpha: 0.15)
-                            : Colors.white)
+                          ? AppColors.success.withValues(alpha: 0.12)
+                          : isSelected
+                          ? AppColors.error.withValues(alpha: 0.12)
+                          : Colors.white)
                     : (isSelected ? AppColors.lightBlue : Colors.white),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: showResult
                       ? (isCorrect
-                          ? AppColors.success
-                          : isSelected
-                              ? AppColors.error
-                              : AppColors.lightBlue)
-                      : (isSelected ? AppColors.primaryBlue : AppColors.lightBlue),
+                            ? AppColors.success
+                            : isSelected
+                            ? AppColors.error
+                            : AppColors.lightBlue)
+                      : (isSelected
+                            ? AppColors.primaryBlue
+                            : answerColor.withValues(alpha: 0.4)),
                   width: 2,
                 ),
               ),
               child: Row(
                 children: [
                   Container(
-                    width: 36,
-                    height: 36,
+                    width: 38,
+                    height: 38,
                     decoration: BoxDecoration(
                       color: showResult
                           ? (isCorrect
-                              ? AppColors.success
-                              : isSelected
-                                  ? AppColors.error
-                                  : AppColors.lightBlue)
-                          : (isSelected ? AppColors.primaryBlue : AppColors.lightBlue),
-                      borderRadius: BorderRadius.circular(10),
+                                ? AppColors.success
+                                : isSelected
+                                ? AppColors.error
+                                : AppColors.lightBlue)
+                          : (isSelected
+                                ? AppColors.primaryBlue
+                                : answerColor.withValues(alpha: 0.2)),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Center(
                       child: showResult && isCorrect
-                          ? const Icon(Icons.check, color: Colors.white, size: 20)
+                          ? const Icon(
+                              Icons.check_rounded,
+                              color: Colors.white,
+                              size: 20,
+                            )
                           : showResult && isSelected
-                              ? const Icon(Icons.close, color: Colors.white, size: 20)
-                              : Text(
-                                  answer.label,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    color: isSelected ? Colors.white : AppColors.primaryBlue,
-                                  ),
-                                ),
+                          ? const Icon(
+                              Icons.close_rounded,
+                              color: Colors.white,
+                              size: 20,
+                            )
+                          : Text(
+                              answer.label,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: isSelected ? Colors.white : answerColor,
+                              ),
+                            ),
                     ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Text(
                       answer.text,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 15,
-                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                         color: AppColors.primaryNavy,
                       ),
                     ),
                   ),
                   if (showResult && isCorrect)
-                    const Icon(Icons.check_circle, color: AppColors.success, size: 24),
+                    const Icon(
+                      Icons.check_circle_rounded,
+                      color: AppColors.success,
+                      size: 24,
+                    ),
                 ],
               ),
             ),
@@ -427,7 +637,9 @@ class QuizView extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.accentBlue,
           padding: const EdgeInsets.symmetric(vertical: 18),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           elevation: 4,
         ),
         child: Text(
@@ -445,6 +657,7 @@ class QuizView extends StatelessWidget {
   }
 
   Widget _buildPreviousScores(List<QuizScore> scores) {
+    if (scores.isEmpty) return const SizedBox.shrink();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -470,9 +683,9 @@ class QuizView extends StatelessWidget {
                 width: 120,
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: scoreColor.withValues(alpha: 0.2),
+                  color: scoreColor.withValues(alpha: 0.18),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: scoreColor.withValues(alpha: 0.4)),
+                  border: Border.all(color: scoreColor.withValues(alpha: 0.35)),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -480,7 +693,10 @@ class QuizView extends StatelessWidget {
                   children: [
                     Text(
                       score.subject,
-                      style: const TextStyle(color: AppColors.softBlue, fontSize: 12),
+                      style: const TextStyle(
+                        color: AppColors.softBlue,
+                        fontSize: 12,
+                      ),
                     ),
                     Text(
                       score.scoreText,
@@ -515,5 +731,11 @@ class QuizView extends StatelessWidget {
       AppColors.skyBlue,
     ];
     return colors[index % colors.length];
+  }
+
+  Color _parseHexColor(String hex) {
+    final buffer = StringBuffer();
+    if (hex.length == 7) buffer.write(hex.substring(1));
+    return Color(int.parse(buffer.toString(), radix: 16) + 0xFF000000);
   }
 }

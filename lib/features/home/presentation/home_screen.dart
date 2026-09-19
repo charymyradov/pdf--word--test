@@ -377,7 +377,7 @@ class HomeView extends StatelessWidget {
                         ],
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 32, top: 2),
+                        padding: const EdgeInsets.only(left: 32),
                         child: Text(
                           type.subtitle,
                           style: TextStyle(fontSize: 12, color: AppColors.textLight),
